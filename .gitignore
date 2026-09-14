@@ -1,0 +1,49 @@
+# Build output
+build/
+Build/
+Debug/
+Release/
+Objects/
+Listings/
+.pio/
+
+# Compiled objects and firmware
+*.o
+*.obj
+*.d
+*.elf
+*.axf
+*.hex
+*.bin
+*.map
+*.lst
+*.lnp
+*.sct
+*.build_log.htm
+
+# Keil user-specific files
+*.uvguix.*
+*.uvoptx
+*.uvguix
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.code-workspace
+
+# Python tools
+__pycache__/
+*.py[cod]
+.venv/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.log
+~$*
