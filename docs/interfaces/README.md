@@ -28,16 +28,16 @@ int8 APP_Robot_SetMotion(RobotMotionMode mode);
 void APP_Command_OnByte(u8 value);
 int8 APP_Safety_Check(void);
 
-void task_robot_motion(void) _task_ TASK_ROBOT_MOTION;
-void task_command(void) _task_ TASK_COMMAND;
-void task_safety(void) _task_ TASK_SAFETY;
+void task_robot_motion(void);
+void task_command(void);
+void task_safety(void);
 ```
 
 - `APP_System_Init`：按上述顺序初始化；核心 GPIO/UART/PCA9685/Servo 任一失败立即返回对应错误。可选外设 `Init` 的结果仅内部保存；当前无动作初始化返回成功不表示操作接口可用。
 - `APP_Robot_SetMotion`：见 [robot-motion.md](robot-motion.md)。
 - `APP_Command_OnByte`：映射 `'0'` STOP、`'1'` STAND、`'2'` CROUCH、`'w'` FORWARD、`'s'` BACKWARD、`'a'` TURN_LEFT、`'d'` TURN_RIGHT、`'h'` GREET；未知字节被忽略。它没有返回值，当前也不会把动作返回码传给调用者。
 - `APP_Safety_Check`：始终尝试读取电池和超声波；任一已就绪传感器确认危险时请求 STOP。若传感器未就绪，优先返回电池错误，否则返回超声波状态。当前阈值 6.0 V 和 15.0 cm 都需实物校准。
-- 三个 `task_*` 是 RTX 任务入口，由 `main_task` 创建，不是普通业务调用 API。
+- 三个 `task_*` 是 RTX 任务入口，由 `main_task` 创建，不是普通业务调用 API。`_task_` 属性只写在任务函数定义上，不写在头文件原型中，否则 Keil C51 会报 C141。
 
 ## `Driver/pca9685.h`
 
