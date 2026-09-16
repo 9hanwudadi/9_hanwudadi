@@ -12,6 +12,11 @@ $required = @(
   'Driver\light.h','Driver\light.c','User\main.c',
   'Lib\Config.h','Lib\Type_def.h','Lib\STC8H.h',
   'Lib\Soft_I2C.h','Lib\Soft_I2C.c',
+  'Lib\GPIO.c','Lib\GPIO.h','Lib\NVIC.c','Lib\NVIC.h',
+  'Lib\UART.c','Lib\UART.h','Lib\UART_Isr.c',
+  'Lib\Timer.c','Lib\Timer.h','Lib\Timer_Isr.c',
+  'Lib\Delay.c','Lib\Delay.h','Lib\ADC.c','Lib\ADC.h',
+  'Lib\STC8H_PWM.c','Lib\STC8H_PWM.h','Lib\Switch.h',
   'OS\Conf_tny.A51','OS\RTX51TNY.LIB',
   'stc8h8k64u.uvproj','stc8h8k64u.uvopt',
   'README.md','docs\architecture.md','docs\hardware-resources.md',
@@ -22,7 +27,10 @@ $missing = $required | Where-Object { -not (Test-Path -LiteralPath (Join-Path $R
 if ($missing) { throw "Missing required files: $($missing -join ', ')" }
 
 $forbidden = Get-ChildItem -LiteralPath $Root -Recurse -Force |
-  Where-Object { $_.Name -like '*.uvgui.*' -or $_.Name -like '*.uvguix.*' -or $_.Name -eq '.vscode' }
+  Where-Object {
+    $_.Name -like '*.uvgui.*' -or $_.Name -like '*.uvguix.*' -or
+    $_.Name -eq '.vscode' -or $_.Name -in 'Objects','Listings'
+  }
 if ($forbidden) { throw "User-specific files found: $($forbidden.FullName -join ', ')" }
 
 $newSources = Get-ChildItem -LiteralPath (Join-Path $Root 'App'),(Join-Path $Root 'Driver'),(Join-Path $Root 'User') -File |
