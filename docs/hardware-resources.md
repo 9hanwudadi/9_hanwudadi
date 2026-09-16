@@ -10,6 +10,7 @@
 | P3.0 | UART1 RX | CONFIRMED | `UART1_SW_P30_P31`；下载/外接模块复用冲突需现场确认 |
 | P3.1 | UART1 TX | CONFIRMED | `UART1_SW_P30_P31`；电平和接线需现场确认 |
 | UART1 | 115200, 8-bit，接收使能 | CONFIRMED | 当前作为核心控制台配置 |
+| UART1 中断 / NVIC | 已启用，`Priority_1` | CONFIRMED | `NVIC_UART1_Init(ENABLE, Priority_1)`；改优先级前须评估 RTX 和其他中断 |
 | Timer1 | UART1 波特率发生器 | CONFIRMED | 不得再分配给舵机或其他周期任务 |
 | P3.2 | PCA9685 软件 I2C SCL | CONFIRMED | 开漏输出，必须有合适的外部上拉电阻 |
 | P3.3 | PCA9685 软件 I2C SDA | CONFIRMED | 开漏输出，必须有合适的外部上拉电阻 |

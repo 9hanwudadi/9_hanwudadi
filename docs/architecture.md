@@ -46,7 +46,7 @@ main_task
   -> delete task 0
 ```
 
-PCA9685 初始化内部配置 P3.2/P3.3 软件 I2C 和 50 Hz；App 不单独调用软件 I2C 初始化。`Servo_Init()` 当前会再次调用幂等的 `PCA9685_Init()`。可选外设的 `Init` 当前是无动作占位，成功返回不表示对应实物功能可用，实际操作仍可能返回 `APP_ERR_NOT_READY`。
+PCA9685 初始化内部配置 P3.2/P3.3 软件 I2C 和 50 Hz；App 不单独调用软件 I2C 初始化。`Servo_Init()` 当前会再次调用幂等的 `PCA9685_Init()`。可选外设的 `Init` 当前是无动作占位，成功返回不表示对应实物功能可用，Driver 实际操作仍可能返回 `DRIVER_ERR_NOT_READY`。
 
 ## 任务与数据流
 
@@ -60,6 +60,8 @@ PCA9685 初始化内部配置 P3.2/P3.3 软件 I2C 和 50 Hz；App 不单独调�
 
 ## 错误归属
 
-Driver 只校验参数、执行硬件操作并返回 `int8` 状态；App 决定失败后的业务动作。例如，姿态写入可能在中途遇到 I/O 错误，Driver 返回 `APP_ERR_IO`，动作任务再请求安全停止。高频任务和中断中不要用大量 `printf` 掩盖时序问题。
+Driver 只校验参数、执行硬件操作并返回 `int8` 状态；App 决定失败后的业务动作。例如，姿态写入可能在中途遇到 I/O 错误，Driver 返回 `DRIVER_ERR_IO`，动作任务再请求安全停止。高频任务和中断中不要用大量 `printf` 掩盖时序问题。
 
 公共错误码为 `0`、`-1`、`-2`、`-3`、`-4`，详见 [接口总览](interfaces/README.md)。所有可能返回负数的公开接口必须保持 `int8`，不能改成普通 `char`。
+
+Driver 使用 `Driver_Common.h` 中的 `DRIVER_*` 名称；`App.h` 仅为 App 调用方提供数值相同的 `APP_*` 别名。Driver 不得为了使用错误码而包含 `App.h`。
