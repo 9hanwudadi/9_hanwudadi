@@ -1,0 +1,12 @@
+Objects/
+Listings/
+*.uvgui.*
+*.uvguix.*
+.vscode/
+*.obj
+*.lst
+*.m51
+*.hex
+*.lnp
+*.build_log.htm
+build.log
