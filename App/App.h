@@ -31,8 +31,8 @@ int8 APP_Robot_SetMotion(RobotMotionMode mode);
 void APP_Command_OnByte(u8 value);
 int8 APP_Safety_Check(void);
 
-void task_robot_motion(void) _task_ TASK_ROBOT_MOTION;
-void task_command(void) _task_ TASK_COMMAND;
-void task_safety(void) _task_ TASK_SAFETY;
+void task_robot_motion(void);
+void task_command(void);
+void task_safety(void);
 
 #endif

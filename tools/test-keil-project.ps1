@@ -6,6 +6,12 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
+# C51 accepts _task_ only on definitions, not header prototypes.
+$appHeader = Get-Content -Raw -LiteralPath (Join-Path $Root 'App/App.h')
+if ($appHeader -match '_task_\s+\w+\s*;') {
+  throw 'C51 task attributes must not appear on function prototypes.'
+}
+
 function Assert-Equal {
   param(
     [Parameter(Mandatory = $true)]$Actual,
@@ -60,6 +66,13 @@ Assert-Equal $target.TargetOption.Target51.Target51Misc.MemoryModel '2' 'Unexpec
 Assert-Equal $target.TargetOption.Target51.Target51Misc.RTOS '1' 'RTX51 Tiny target setting is not enabled'
 Assert-Equal $target.TargetOption.Target51.Target51Misc.RomSize '2' 'Unexpected C51 ROM size'
 Assert-Equal $target.TargetOption.Target51.C51.VariousControls.IncludePath '.\App;.\Driver;.\Lib;.\User' 'Unexpected compiler include path'
+# Imported ADC.c uses these documented ADC_CONTR masks, but its header
+# leaves the aliases commented out. Supply them without editing Lib bytes.
+Assert-Equal $target.TargetOption.Target51.C51.VariousControls.Define 'ADC_START=0x40,ADC_FLAG=0x20' 'Missing STC8H ADC compatibility definitions'
+$disabledLinkWarnings = [string]$target.TargetOption.Target51.Lx51.DisableWarningNumbers
+if (($disabledLinkWarnings -split '[,\s]+') -contains '15') {
+  throw 'BL51 multiple-call warning L15 must remain enabled for RTX task safety.'
+}
 Assert-Equal $options.ProjectOpt.Target.TargetOption.CLK51 '24000000' 'Unexpected debugger clock'
 
 $expectedGroups = [ordered]@{

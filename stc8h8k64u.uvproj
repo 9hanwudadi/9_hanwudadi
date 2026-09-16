@@ -322,7 +322,7 @@
             <InterruptVectorAddress>0</InterruptVectorAddress>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>ADC_START=0x40,ADC_FLAG=0x20</Define>
               <Undefine></Undefine>
               <IncludePath>.\App;.\Driver;.\Lib;.\User</IncludePath>
             </VariousControls>
@@ -348,7 +348,7 @@
             <DataOverlaying>1</DataOverlaying>
             <OverlayString></OverlayString>
             <MiscControls></MiscControls>
-            <DisableWarningNumbers>15,16</DisableWarningNumbers>
+            <DisableWarningNumbers>16</DisableWarningNumbers>
             <LinkerCmdFile></LinkerCmdFile>
             <Assign></Assign>
             <ReserveString></ReserveString>

@@ -32,9 +32,24 @@ $forbidden = Get-ChildItem -LiteralPath $Root -Recurse -Force |
     $_.FullName -ne $gitRoot -and
     -not $_.FullName.StartsWith($gitRoot + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase) -and
     ($_.Name -like '*.uvgui.*' -or $_.Name -like '*.uvguix.*' -or
-    $_.Name -eq '.vscode' -or $_.Name -in 'Objects','Listings')
+    $_.Name -eq '.vscode')
   }
 if ($forbidden) { throw "User-specific files found: $($forbidden.FullName -join ', ')" }
+
+# A real Keil build creates these ignored directories. Reject tracked
+# artifacts instead of rejecting the local evidence of a successful build.
+$tracked = & git -C $Root ls-files
+if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect tracked template files.' }
+$trackedArtifacts = $tracked | Where-Object {
+  $_ -match '(^|/)(Objects|Listings)/|\.(obj|lst|m51|hex|lnp|build_log\.htm)$|(^|/)build\.log$'
+}
+if ($trackedArtifacts) { throw "Tracked build artifacts found: $($trackedArtifacts -join ', ')" }
+foreach ($generated in @('Objects/', 'Listings/', 'build.log')) {
+  if (Test-Path -LiteralPath (Join-Path $Root $generated)) {
+    & git -C $Root check-ignore --quiet -- $generated
+    if ($LASTEXITCODE -ne 0) { throw "Build output is not ignored: $generated" }
+  }
+}
 
 $newSources = Get-ChildItem -LiteralPath (Join-Path $Root 'App'),(Join-Path $Root 'Driver'),(Join-Path $Root 'User') -File |
   Where-Object { $_.Extension -in '.c','.h' }

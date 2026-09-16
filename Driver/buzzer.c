@@ -7,8 +7,8 @@ int8 Buzzer_Init(void)
 
 int8 Buzzer_Beep(u16 frequency_hz, u16 duration_ms)
 {
-    (void)frequency_hz;
-    (void)duration_ms;
+    frequency_hz = frequency_hz; /* C51-compatible unused parameters. */
+    duration_ms = duration_ms;
     return DRIVER_ERR_NOT_READY;
 }
 

@@ -7,7 +7,7 @@ int8 Light_Init(void)
 
 int8 Light_Set(u8 light_id, u8 enabled)
 {
-    (void)light_id;
-    (void)enabled;
+    light_id = light_id; /* C51-compatible unused parameters. */
+    enabled = enabled;
     return DRIVER_ERR_NOT_READY;
 }
