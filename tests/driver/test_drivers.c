@@ -7,6 +7,7 @@
 #include "battery.h"
 #include "buzzer.h"
 #include "light.h"
+#include "GPIO.h"
 
 #define CHECK(expr) do { if (!(expr)) { \
     printf("FAIL line %d: %s\n", __LINE__, #expr); exit(1); \
@@ -23,7 +24,23 @@ static unsigned int write_count;
 static unsigned int fail_at;
 static unsigned int elapsed_ms;
 static unsigned int wake_write_count;
+static unsigned int gpio_call_count;
+static unsigned int writes_before_gpio;
+static u8 gpio_port;
+static u8 gpio_mode;
+static u8 gpio_pins;
+static u8 gpio_result;
 u8 F0;
+
+u8 GPIO_Inilize(u8 port, GPIO_InitTypeDef *config)
+{
+    ++gpio_call_count;
+    writes_before_gpio = write_count;
+    gpio_port = port;
+    gpio_mode = config->Mode;
+    gpio_pins = config->Pin;
+    return gpio_result;
+}
 
 /* Hardware spy: preserve bus-write order/payload and the vendor ACK flag. */
 void SI2C_WriteNbyte(u8 address, u8 reg, u8 *bytes, u8 count)
@@ -53,7 +70,38 @@ static void reset_bus(void)
     fail_at = 0;
     elapsed_ms = 0;
     wake_write_count = 0;
+    gpio_call_count = 0;
+    writes_before_gpio = 0;
+    gpio_port = 0;
+    gpio_mode = 0;
+    gpio_pins = 0;
+    gpio_result = 0;
     F0 = 0;
+}
+
+static void test_i2c_pin_initialization(void)
+{
+    reset_bus();
+    CHECK(PCA9685_Init() == 0);
+    CHECK(gpio_call_count == 1);
+    CHECK(gpio_port == 3);
+    CHECK(gpio_pins == 0x0C);
+    CHECK(gpio_mode == 2);
+    CHECK(writes_before_gpio == 0 && write_count == 4);
+    reset_bus();
+    /* GPIO_Inilize returns u8, so the vendor's FAIL (-1) is 255. */
+    gpio_result = 255;
+    CHECK(PCA9685_Init() == -3);
+    CHECK(gpio_call_count == 1 && write_count == 0);
+    reset_bus();
+    CHECK(Servo_Init() == 0);
+    CHECK(gpio_call_count == 1);
+    CHECK(gpio_port == 3 && gpio_pins == 0x0C && gpio_mode == 2);
+    CHECK(writes_before_gpio == 0 && write_count == 4);
+    reset_bus();
+    gpio_result = 255;
+    CHECK(Servo_Init() == -3);
+    CHECK(gpio_call_count == 1 && write_count == 0);
 }
 
 static void expect_pwm(unsigned int index, u8 reg, u8 on_lo,
@@ -199,6 +247,7 @@ static void test_unallocated_hardware(void)
 
 int main(void)
 {
+    test_i2c_pin_initialization();
     test_pca9685();
     test_servo();
     test_unallocated_hardware();

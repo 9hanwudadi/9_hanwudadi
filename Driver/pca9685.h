@@ -3,7 +3,8 @@
 
 #include "Driver_Common.h"
 
-/* Init selects 50 Hz without writing any servo positions. */
+/* Init configures P3.2/P3.3 as open-drain, then selects 50 Hz without
+ * writing servo positions. The software I2C bus requires external pull-ups. */
 int8 PCA9685_Init(void);
 /* Owns MODE1: internal 25 MHz clock, auto-increment, no subaddresses. */
 int8 PCA9685_SetFrequency(u16 frequency_hz);

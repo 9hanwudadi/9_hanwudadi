@@ -1,6 +1,7 @@
 #include "pca9685.h"
 #include "Soft_I2C.h"
 #include "Delay.h"
+#include "GPIO.h"
 
 #define PCA9685_WRITE_ADDRESS 0x80
 #define PCA9685_MODE1         0x00
@@ -19,6 +20,14 @@ static int8 PCA9685_WriteRegister(u8 reg, u8 value)
 
 int8 PCA9685_Init(void)
 {
+    GPIO_InitTypeDef pins;
+
+    /* Soft_I2C uses P3.2 (SCL) and P3.3 (SDA); external pull-ups required. */
+    pins.Mode = GPIO_OUT_OD;
+    pins.Pin = GPIO_Pin_2 | GPIO_Pin_3;
+    if (GPIO_Inilize(GPIO_P3, &pins) != 0) {
+        return DRIVER_ERR_IO;
+    }
     return PCA9685_SetFrequency(50);
 }
 
