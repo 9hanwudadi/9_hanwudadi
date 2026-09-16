@@ -26,10 +26,13 @@ $required = @(
 $missing = $required | Where-Object { -not (Test-Path -LiteralPath (Join-Path $Root $_)) }
 if ($missing) { throw "Missing required files: $($missing -join ', ')" }
 
+$gitRoot = [System.IO.Path]::GetFullPath((Join-Path $Root '.git'))
 $forbidden = Get-ChildItem -LiteralPath $Root -Recurse -Force |
   Where-Object {
-    $_.Name -like '*.uvgui.*' -or $_.Name -like '*.uvguix.*' -or
-    $_.Name -eq '.vscode' -or $_.Name -in 'Objects','Listings'
+    $_.FullName -ne $gitRoot -and
+    -not $_.FullName.StartsWith($gitRoot + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase) -and
+    ($_.Name -like '*.uvgui.*' -or $_.Name -like '*.uvguix.*' -or
+    $_.Name -eq '.vscode' -or $_.Name -in 'Objects','Listings')
   }
 if ($forbidden) { throw "User-specific files found: $($forbidden.FullName -join ', ')" }
 
