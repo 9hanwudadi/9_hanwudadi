@@ -1,0 +1,4 @@
+# Preserve imported legacy/vendor files byte-for-byte in commits and clones.
+Lib/** -text
+OS/** -text
+stc8h8k64u.uvopt -text
