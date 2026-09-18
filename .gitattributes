@@ -2,3 +2,10 @@
 Lib/** -text
 OS/** -text
 stc8h8k64u.uvopt -text
+
+# Preserve user-provided hardware references and generated PDFs byte-for-byte.
+docs/hardware/**/*.pdf -text -diff
+docs/hardware/**/*.jpg -text -diff
+docs/hardware/**/*.png -text -diff
+docs/hardware/**/*.zip -text -diff
+docs/hardware/**/*.hd -text -diff
