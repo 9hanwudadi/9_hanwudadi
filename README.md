@@ -36,20 +36,21 @@
 git clone https://github.com/9hanwudadi/9_hanwudadi.git
 cd 9_hanwudadi
 git switch develop
-git switch -c feature/<模块>-<简短目的>
+git switch -c feature/servo-calibration
 ```
 
-每次提交只包含一个清晰目的。提交前检查差异、运行对应模块测试和仓库验证器：
+上面的 `feature/servo-calibration` 是舵机标定任务示例；其他成员用同样格式创建自己的功能分支。每次提交只包含一个清晰目的。以修改舵机驱动为例，提交前检查差异、运行对应模块测试和仓库验证器：
 
 ```bash
 git status --short
 git diff --check
 powershell -ExecutionPolicy Bypass -File tools/validate-template.ps1 -Root .
-git add <本次修改的文件>
-git commit -m "feat: describe the module change"
+git add Driver/servo.c Driver/servo.h docs/hardware-resources.md
+git commit -m "feat: calibrate quadruped servos"
+git push -u origin feature/servo-calibration
 ```
 
-然后把功能分支推到团队仓库并发起 PR。PR 说明至少写清：改了什么、怎样验证、占用了哪些硬件资源、接口是否变化、仍有哪些限制。由牛迈负责接口协调、资源冲突检查和合并；不要直接把未经单测的代码复制进主分支。
+推送后打开 GitHub 页面显示的 **Compare & pull request**，将目标分支选为 `develop`；也可以直接打开 [develop 与示例功能分支的比较页面](https://github.com/9hanwudadi/9_hanwudadi/compare/develop...feature/servo-calibration?expand=1)。PR 说明至少写清：改了什么、怎样验证、占用了哪些硬件资源、接口是否变化、仍有哪些限制。由牛迈负责接口协调、资源冲突检查和合并；不要直接把未经单测的代码复制进主分支。
 
 ### 修改接口时
 

@@ -4,6 +4,7 @@ Listings/
 *.uvguix.*
 .vscode/
 .worktrees/
+tmp/pdfs/
 *.obj
 *.lst
 *.m51
