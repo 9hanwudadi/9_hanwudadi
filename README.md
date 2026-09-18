@@ -23,17 +23,19 @@
 | `Lib/` | STC 底层库、寄存器封装、UART、Timer、软件 I2C 等 |
 | `OS/` | RTX51 Tiny 配置与库 |
 | `docs/` | 架构、资源登记和接口契约 |
+| `docs/hardware/` | PCA9685、JDY-33、LM2596、LU-ASR01 等硬件参考资料及索引 |
 | `tests/`、`tools/` | 主机侧检查和仓库验证脚本，不加入 Keil Target |
 
-完整依赖规则见 [docs/architecture.md](docs/architecture.md)，已确认和待分配的硬件资源见 [docs/hardware-resources.md](docs/hardware-resources.md)，接口入口见 [docs/interfaces/README.md](docs/interfaces/README.md)。
+完整依赖规则见 [docs/architecture.md](docs/architecture.md)，已确认和待分配的硬件资源见 [docs/hardware-resources.md](docs/hardware-resources.md)，硬件原始资料见 [docs/hardware/README.md](docs/hardware/README.md)，接口入口见 [docs/interfaces/README.md](docs/interfaces/README.md)。
 
 ## Git 协作流程
 
-当前工作副本没有配置远程地址，因此不要把参考项目 URL 当成模板仓库地址。由项目整合负责人确认实际模板仓库 URL 后，按以下流程协作：
+团队仓库为 [9hanwudadi/9_hanwudadi](https://github.com/9hanwudadi/9_hanwudadi)。功能开发从 `develop` 建立个人分支：
 
 ```bash
-git clone <由整合负责人确认的模板仓库URL> Quadruped_Robot_Template
-cd Quadruped_Robot_Template
+git clone https://github.com/9hanwudadi/9_hanwudadi.git
+cd 9_hanwudadi
+git switch develop
 git switch -c feature/<模块>-<简短目的>
 ```
 
@@ -42,12 +44,12 @@ git switch -c feature/<模块>-<简短目的>
 ```bash
 git status --short
 git diff --check
+powershell -ExecutionPolicy Bypass -File tools/validate-template.ps1 -Root .
 git add <本次修改的文件>
 git commit -m "feat: describe the module change"
-powershell -ExecutionPolicy Bypass -File tools/validate-template.ps1 -Root .
 ```
 
-然后把功能分支推到团队确认的远程仓库并发起 PR。PR 说明至少写清：改了什么、怎样验证、占用了哪些硬件资源、接口是否变化、仍有哪些限制。由牛迈负责接口协调、资源冲突检查和合并；不要直接把未经单测的代码复制进主分支。
+然后把功能分支推到团队仓库并发起 PR。PR 说明至少写清：改了什么、怎样验证、占用了哪些硬件资源、接口是否变化、仍有哪些限制。由牛迈负责接口协调、资源冲突检查和合并；不要直接把未经单测的代码复制进主分支。
 
 ### 修改接口时
 
