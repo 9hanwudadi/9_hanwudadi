@@ -3,6 +3,7 @@ Listings/
 *.uvgui.*
 *.uvguix.*
 .vscode/
+.worktrees/
 *.obj
 *.lst
 *.m51
